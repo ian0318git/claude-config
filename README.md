@@ -7,7 +7,7 @@ Structured CLAUDE.md templates for AI-assisted development, organized by project
 ```
 claude-config/
 ├── CLAUDE.md                    # Main template — dual-mode (General + Embedded)
-├── variants/
+├── variants/                    # Project-level templates (download to project root)
 │   ├── embedded-c.md            # C / Embedded / Firmware projects
 │   ├── kotlin-android.md        # Kotlin / Android projects
 │   ├── python-ai-agent.md       # Python AI / Agent / Data projects
@@ -15,10 +15,6 @@ claude-config/
 ├── zh/                          # Chinese (中文) versions
 │   ├── CLAUDE.md
 │   └── variants/
-│       ├── embedded-c.md
-│       ├── kotlin-android.md
-│       ├── python-ai-agent.md
-│       └── web-typescript.md
 ├── decisions/
 │   └── DECISIONS.md             # Decision record template
 └── scripts/
@@ -27,32 +23,43 @@ claude-config/
 
 ## Quick Start
 
+### Global config — set your default workflow
+
 ```bash
-# Main template (English) — global config
 curl -o ~/.claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/CLAUDE.md
+```
 
-# Python AI / Agent project
-curl -o ~/.claude/CLAUDE.md \
+### Project-level config — one per project (commit it!)
+
+```bash
+# Python AI / Agent project: run in project root
+curl -o CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/variants/python-ai-agent.md
 
-# Chinese version
-curl -o ~/.claude/CLAUDE.md \
+# Chinese version for a project
+curl -o CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/zh/variants/python-ai-agent.md
 ```
 
-Or use the setup script (auto-detects project type):
+### Auto-detection
 
 ```bash
+# Run in project root — detects type and downloads variant to ./CLAUDE.md
 bash <(curl -s https://raw.githubusercontent.com/ian0318git/claude-config/main/scripts/setup.sh)
+
+# Global mode
+bash <(curl -s https://raw.githubusercontent.com/ian0318git/claude-config/main/scripts/setup.sh) --global
 ```
 
 ## How It Works
 
-1. Run the download command (writes to `~/.claude/CLAUDE.md`).
-2. Claude Code reads `~/.claude/CLAUDE.md` automatically as the global config.
-3. Or place it in `<project>/.claude/CLAUDE.md` for project-specific overrides.
-3. Each variant tailors the reviewer checklist and technical guidelines to its stack.
+| File | Scope | Where it goes | Use case |
+|------|-------|---------------|----------|
+| `CLAUDE.md` | global | `~/.claude/` | Default workflow for all projects |
+| `variants/*.md` | project | project root (`./CLAUDE.md`) | Per-project override; commit to repo |
+
+Claude Code reads `~/.claude/CLAUDE.md` first, then checks `<project>/.claude/CLAUDE.md` for overrides.
 
 ## License
 

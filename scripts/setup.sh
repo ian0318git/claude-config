@@ -2,9 +2,13 @@
 set -euo pipefail
 
 # Claude Config Setup Script
-# Downloads the right CLAUDE.md variant for your project (auto-detection or manual select)
+# Downloads the right CLAUDE.md variant for your project
 # Supports English (default) and Chinese (--lang zh)
-# Writes to ~/.claude/CLAUDE.md (global Claude Code config)
+#
+# Usage:
+#   setup.sh              # auto-detect → project-level (./CLAUDE.md)
+#   setup.sh --global     # download main → global (~/.claude/CLAUDE.md)
+#   setup.sh --lang zh    # Chinese version
 
 REPO_URL="https://raw.githubusercontent.com/ian0318git/claude-config/main"
 
@@ -15,12 +19,14 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 LANG="${LANG:-en}"
+GLOBAL=false
 
 # Parse args
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --global) GLOBAL=true; shift ;;
         --lang) LANG="$2"; shift 2 ;;
-        *) echo "Usage: $0 [--lang en|zh]"; exit 1 ;;
+        *) echo "Usage: $0 [--global] [--lang en|zh]"; exit 1 ;;
     esac
 done
 
@@ -77,35 +83,52 @@ choose_variant() {
     esac
 }
 
-# Main
-detected=$(detect_project_type)
-if [[ "$detected" == "main" ]]; then
-    variant=$(choose_variant)
+# Determine variant
+if $GLOBAL; then
+    variant="main"
+    echo -e "${BLUE}Mode:${NC} global"
 else
-    variant="$detected"
-    variant_names=("main" "python-ai-agent" "web-typescript" "kotlin-android" "embedded-c")
-    display_names_en=("Main" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
-    display_names_zh=("主版" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
-    for i in "${!variant_names[@]}"; do
-        if [[ "${variant_names[$i]}" == "$variant" ]]; then
-            [[ "$LANG" == "zh" ]] && echo -e "${BLUE}Auto-detected:${NC} ${display_names_zh[$i]}" \
-                                  || echo -e "${BLUE}Auto-detected:${NC} ${display_names_en[$i]}"
-            break
-        fi
-    done
+    detected=$(detect_project_type)
+    if [[ "$detected" == "main" ]]; then
+        variant=$(choose_variant)
+    else
+        variant="$detected"
+        variant_names=("main" "python-ai-agent" "web-typescript" "kotlin-android" "embedded-c")
+        display_names_en=("Main" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
+        display_names_zh=("主版" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
+        for i in "${!variant_names[@]}"; do
+            if [[ "${variant_names[$i]}" == "$variant" ]]; then
+                [[ "$LANG" == "zh" ]] && echo -e "${BLUE}Auto-detected:${NC} ${display_names_zh[$i]}" \
+                                      || echo -e "${BLUE}Auto-detected:${NC} ${display_names_en[$i]}"
+                break
+            fi
+        done
+    fi
 fi
 
-# Build URL and download to ~/.claude/
-mkdir -p ~/.claude
+# Build URL
 if [[ "$variant" == "main" ]]; then
     url="$REPO_URL/${PREFIX}CLAUDE.md"
 else
     url="$REPO_URL/${PREFIX}variants/$variant.md"
 fi
 
-echo -e "${GREEN}Downloading${NC} $variant ..."
-if curl -sfL "$url" -o ~/.claude/CLAUDE.md; then
-    echo -e "${GREEN}Done!${NC} ~/.claude/CLAUDE.md has been written."
+# Download
+if $GLOBAL || [[ "$variant" == "main" ]]; then
+    mkdir -p ~/.claude
+    out="$HOME/.claude/CLAUDE.md"
+    scope="global"
+else
+    out="./CLAUDE.md"
+    scope="project"
+fi
+
+echo -e "${GREEN}Downloading${NC} $variant ($scope) ..."
+if curl -sfL "$url" -o "$out"; then
+    echo -e "${GREEN}Done!${NC} $out"
+    if [[ "$scope" == "project" ]]; then
+        echo -e "${BLUE}Tip:${NC} Don't forget to commit CLAUDE.md to your repo!"
+    fi
 else
     echo -e "${YELLOW}Failed to download.${NC} Check your internet connection."
     exit 1
