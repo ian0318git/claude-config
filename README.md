@@ -28,16 +28,16 @@ claude-config/
 ## Quick Start
 
 ```bash
-# Main template (English)
-curl -o .claude/CLAUDE.md \
+# Main template (English) — global config
+curl -o ~/.claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/CLAUDE.md
 
 # Python AI / Agent project
-curl -o .claude/CLAUDE.md \
+curl -o ~/.claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/variants/python-ai-agent.md
 
 # Chinese version
-curl -o .claude/CLAUDE.md \
+curl -o ~/.claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/zh/variants/python-ai-agent.md
 ```
 
@@ -49,8 +49,9 @@ bash <(curl -s https://raw.githubusercontent.com/ian0318git/claude-config/main/s
 
 ## How It Works
 
-1. Run the download command in your project root.
-2. Claude Code reads `.claude/CLAUDE.md` automatically.
+1. Run the download command (writes to `~/.claude/CLAUDE.md`).
+2. Claude Code reads `~/.claude/CLAUDE.md` automatically as the global config.
+3. Or place it in `<project>/.claude/CLAUDE.md` for project-specific overrides.
 3. Each variant tailors the reviewer checklist and technical guidelines to its stack.
 
 ## License

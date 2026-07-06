@@ -4,6 +4,7 @@ set -euo pipefail
 # Claude Config Setup Script
 # Downloads the right CLAUDE.md variant for your project (auto-detection or manual select)
 # Supports English (default) and Chinese (--lang zh)
+# Writes to ~/.claude/CLAUDE.md (global Claude Code config)
 
 REPO_URL="https://raw.githubusercontent.com/ian0318git/claude-config/main"
 
@@ -94,8 +95,8 @@ else
     done
 fi
 
-# Build URL and download
-mkdir -p .claude
+# Build URL and download to ~/.claude/
+mkdir -p ~/.claude
 if [[ "$variant" == "main" ]]; then
     url="$REPO_URL/${PREFIX}CLAUDE.md"
 else
@@ -103,8 +104,8 @@ else
 fi
 
 echo -e "${GREEN}Downloading${NC} $variant ..."
-if curl -sfL "$url" -o .claude/CLAUDE.md; then
-    echo -e "${GREEN}Done!${NC} .claude/CLAUDE.md has been written."
+if curl -sfL "$url" -o ~/.claude/CLAUDE.md; then
+    echo -e "${GREEN}Done!${NC} ~/.claude/CLAUDE.md has been written."
 else
     echo -e "${YELLOW}Failed to download.${NC} Check your internet connection."
     exit 1

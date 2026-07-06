@@ -23,12 +23,12 @@ claude-config/
 ## 快速開始
 
 ```bash
-# 中文版主模板
-curl -o .claude/CLAUDE.md \
+# 中文版主模板 — 全域設定
+curl -o ~/.claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/zh/CLAUDE.md
 
 # 中文版 Python AI / Agent 專案
-curl -o .claude/CLAUDE.md \
+curl -o ~/.claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/zh/variants/python-ai-agent.md
 ```
 
