@@ -1,52 +1,57 @@
-# Claude Config 🎯
+# Claude Config
 
-Personal Claude Code configuration templates and CLAUDE.md variants for different project types.
+Structured CLAUDE.md templates for AI-assisted development, organized by project type. English by default; Chinese versions available under [`zh/`](./zh/).
 
 ## Structure
 
 ```
 claude-config/
-├── CLAUDE.md                    # 通用主版（預設）
+├── CLAUDE.md                    # Main template — dual-mode (General + Embedded)
 ├── variants/
-│   ├── embedded-c.md            # C / Embedded / Firmware 專案
-│   ├── kotlin-android.md        # Kotlin / Android 專案
-│   ├── python-ai-agent.md       # Python AI / Agent / Data 專案
-│   └── web-typescript.md        # TypeScript / Full-stack 專案
+│   ├── embedded-c.md            # C / Embedded / Firmware projects
+│   ├── kotlin-android.md        # Kotlin / Android projects
+│   ├── python-ai-agent.md       # Python AI / Agent / Data projects
+│   └── web-typescript.md        # TypeScript / Full-stack projects
+├── zh/                          # Chinese (中文) versions
+│   ├── CLAUDE.md
+│   └── variants/
+│       ├── embedded-c.md
+│       ├── kotlin-android.md
+│       ├── python-ai-agent.md
+│       └── web-typescript.md
 ├── decisions/
-│   └── DECISIONS.md             # 決策記錄範本
+│   └── DECISIONS.md             # Decision record template
 └── scripts/
-    └── setup.sh                 # 一鍵下載對應 CLAUDE.md
+    └── setup.sh                 # One-click setup with auto-detection
 ```
 
 ## Quick Start
 
-在新專案中套用對應的 CLAUDE.md：
-
 ```bash
-# 通用版
+# Main template (English)
 curl -o .claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/CLAUDE.md
 
-# Python AI / Agent 專案
+# Python AI / Agent project
 curl -o .claude/CLAUDE.md \
   https://raw.githubusercontent.com/ian0318git/claude-config/main/variants/python-ai-agent.md
 
-# TypeScript Web 專案
+# Chinese version
 curl -o .claude/CLAUDE.md \
-  https://raw.githubusercontent.com/ian0318git/claude-config/main/variants/web-typescript.md
+  https://raw.githubusercontent.com/ian0318git/claude-config/main/zh/variants/python-ai-agent.md
 ```
 
-或用腳本一鍵搞定：
+Or use the setup script (auto-detects project type):
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/ian0318git/claude-config/main/scripts/setup.sh)
 ```
 
-## 使用方式
+## How It Works
 
-1. 在專案根目錄執行下載指令
-2. Claude Code 會自動讀取 `.claude/CLAUDE.md`
-3. 各 variant 已針對該技術棧調整檢查清單與規則
+1. Run the download command in your project root.
+2. Claude Code reads `.claude/CLAUDE.md` automatically.
+3. Each variant tailors the reviewer checklist and technical guidelines to its stack.
 
 ## License
 

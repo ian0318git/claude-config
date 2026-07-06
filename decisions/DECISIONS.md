@@ -1,33 +1,58 @@
 # DECISIONS
 
-> 記錄專案中的重要架構與技術決策。
+> Record significant architecture and technical decisions.
 
-## 格式
+## Template
 
 ```markdown
-## YYYY-MM-DD: [決策標題]
+## YYYY-MM-DD: [Decision Title]
 
-### 狀態
+### Status
 Accepted | Proposed | Deprecated | Superseded by [link]
 
-### 背景
-為什麼需要這個決策？
+### Context
+Why was this decision needed?
 
-### 選項
-- Option A：優缺點
-- Option B：優缺點
+### Options
+- Option A: pros / cons
+- Option B: pros / cons
 
-### 決定
-選擇 Option X，因為 ...
+### Decision
+Chose Option X because ...
 
-### 影響
-正面影響：
+### Consequences
+Positive:
 - ...
 
-負面影響 / 需注意：
+Negative / Caveats:
 - ...
 ```
 
 ---
 
-<!-- 以下為實際記錄 -->
+<!-- Actual records below -->
+
+## 2026-07-06: CLAUDE.md repo restructuring
+
+### Status
+Accepted
+
+### Context
+The repo originally had Chinese-first content with personal branding. Switched to English-first with Chinese as a language toggle (`zh/` directory) and removed personal names from content.
+
+### Options
+- A: Keep Chinese-first, English as toggle
+- B: English-first, Chinese in `zh/` directory
+- C: Monolingual English only
+
+### Decision
+Chose Option B because the user wants to share this publicly with a broader audience, while retaining Chinese for personal use and Taiwanese developer community.
+
+### Consequences
+Positive:
+- Accessible to international users
+- Clean separation of languages
+- Setup script supports `--lang zh` flag
+
+Negative:
+- Two copies to maintain when updating content

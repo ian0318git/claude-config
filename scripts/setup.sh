@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Claude Config Setup Script
-# 一鍵下載對應的 CLAUDE.md 到目前目錄
+# Downloads the right CLAUDE.md variant for your project (auto-detection or manual select)
+# Supports English (default) and Chinese (--lang zh)
 
 REPO_URL="https://raw.githubusercontent.com/ian0318git/claude-config/main"
 
@@ -11,6 +12,19 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
+
+LANG="${LANG:-en}"
+
+# Parse args
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --lang) LANG="$2"; shift 2 ;;
+        *) echo "Usage: $0 [--lang en|zh]"; exit 1 ;;
+    esac
+done
+
+PREFIX=""
+[[ "$LANG" == "zh" ]] && PREFIX="zh/"
 
 echo -e "${BLUE}╔══════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║   Claude Config Setup                ║${NC}"
@@ -38,7 +52,7 @@ detect_project_type() {
     elif [[ "$has_ts" -eq 1 ]]; then
         echo "web-typescript"
     else
-        echo "CLAUDE"
+        echo "main"
     fi
 }
 
@@ -46,7 +60,7 @@ detect_project_type() {
 choose_variant() {
     echo -e "${YELLOW}Could not auto-detect project type.${NC}"
     echo "Select a variant:"
-    echo "  1) CLAUDE.md (通用版)"
+    echo "  1) Main (dual-mode)"
     echo "  2) Python AI / Agent"
     echo "  3) TypeScript / Full-stack"
     echo "  4) Kotlin / Android"
@@ -58,37 +72,40 @@ choose_variant() {
         3) echo "web-typescript" ;;
         4) echo "kotlin-android" ;;
         5) echo "embedded-c" ;;
-        *) echo "CLAUDE" ;;
+        *) echo "main" ;;
     esac
 }
 
 # Main
 detected=$(detect_project_type)
-if [[ "$detected" == "CLAUDE" ]]; then
+if [[ "$detected" == "main" ]]; then
     variant=$(choose_variant)
 else
     variant="$detected"
-    variant_names=("CLAUDE" "python-ai-agent" "web-typescript" "kotlin-android" "embedded-c")
-    display_names=("通用版" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
+    variant_names=("main" "python-ai-agent" "web-typescript" "kotlin-android" "embedded-c")
+    display_names_en=("Main" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
+    display_names_zh=("主版" "Python AI / Agent" "TypeScript / Full-stack" "Kotlin / Android" "C / Embedded")
     for i in "${!variant_names[@]}"; do
         if [[ "${variant_names[$i]}" == "$variant" ]]; then
-            echo -e "${BLUE}Auto-detected:${NC} ${display_names[$i]}"
+            [[ "$LANG" == "zh" ]] && echo -e "${BLUE}Auto-detected:${NC} ${display_names_zh[$i]}" \
+                                  || echo -e "${BLUE}Auto-detected:${NC} ${display_names_en[$i]}"
             break
         fi
     done
 fi
 
-# Download
+# Build URL and download
 mkdir -p .claude
-url="$REPO_URL"
-if [[ "$variant" != "CLAUDE" ]]; then
-    url="$REPO_URL/variants/$variant.md"
+if [[ "$variant" == "main" ]]; then
+    url="$REPO_URL/${PREFIX}CLAUDE.md"
+else
+    url="$REPO_URL/${PREFIX}variants/$variant.md"
 fi
 
 echo -e "${GREEN}Downloading${NC} $variant ..."
 if curl -sfL "$url" -o .claude/CLAUDE.md; then
-    echo -e "${GREEN}✅ Done!${NC} .claude/CLAUDE.md has been written."
+    echo -e "${GREEN}Done!${NC} .claude/CLAUDE.md has been written."
 else
-    echo -e "${YELLOW}❌ Failed to download.${NC} Check your internet connection."
+    echo -e "${YELLOW}Failed to download.${NC} Check your internet connection."
     exit 1
 fi

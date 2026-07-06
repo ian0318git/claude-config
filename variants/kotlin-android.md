@@ -1,46 +1,44 @@
-# CLAUDE.md - Kotlin / Android 專案（衍生自 Ian AI Vibe Coding 通用版）
+# CLAUDE.md — Kotlin / Android Project (General Mode)
 
-## 系統基礎設定
-- **開發風格**：AI Vibe Coding — 快速原型 + 高正確性 + 實用可維護程式碼。
-- **模式**：General Mode（預設）
-- **注意**：若涉及 NDK / JNI / Embedded 層，切換為 Embedded Mode
+Derived from the Vibe Coding Dual-Mode Workflow.
 
-## 通用原則
+## Core Principles
 - Correctness First
-- 強制異常處理與邊界條件
-- **若專案無自動化測試，必須聲明「無測試覆蓋」並說明手動驗證方式**
+- Forced error handling & edge cases
+- **No-test disclaimer required** if no automated tests exist
+- Switch to Embedded Mode if NDK / JNI / native code is involved
 
-## 工作流程
-1. **任務錨點**：每輪開始前用 1-2 句話重述原始需求。
-2. Architect（必要時）→ Lead Developer 實作 + 測試 → Senior Reviewer 審查。
-3. 審查未給 `[REVIEW_PASSED]` → 退回修正（修正前再次重述錨點）。
-4. **迭代限制**：小型 3 輪、中型 5 輪、大型 8 輪。
-5. 達上限失敗 → 停止並輸出完整狀態。
+## Workflow
+1. **Task Anchor** — restate the requirement in 1–2 sentences.
+2. Architect (optional) → Lead Developer (implement + test) → Senior Reviewer.
+3. No `[REVIEW_PASSED]` → bounce back (re-anchor first).
+4. Iteration limits: small=3, medium=5, large=8.
+5. On failure: output full state and stop.
 
-## 技術規範
-- **Kotlin 慣例**：
-  - 優先使用 immutable data class、sealed class
-  - 避免 `!!`，使用 `?.` / `?:` / `requireNotNull()` 安全存取
-  - Coroutine + Flow 處理非同步，避免 raw Thread
-- **Android 專項**：
-  - Activity / Fragment / Composable 生命週期正確處理
-  - ViewModel + StateFlow 管理 UI 狀態
-  - Dependency Injection（Hilt / Koin）
-  - Room / DataStore 資料持久化
-- **後端 / API**：
-  - Retrofit / Ktor Client 搭配 Kotlinx Serialization
-  - 統一錯誤處理與網路狀態管理
-- **測試**：JUnit 5 + MockK + Compose UI Test
+## Technical Guidelines
+- **Kotlin conventions**:
+  - Prefer immutable data classes, sealed classes
+  - Avoid `!!` — use `?.` / `?:` / `requireNotNull()`
+  - Coroutine + Flow for async; never raw `Thread`
+- **Android-specific**:
+  - Correct lifecycle handling (Activity / Fragment / Compose)
+  - ViewModel + StateFlow for UI state
+  - DI via Hilt / Koin
+  - Room / DataStore for persistence
+- **Backend / API**:
+  - Retrofit / Ktor Client with Kotlinx Serialization
+  - Unified error handling & network state
+- **Testing**: JUnit 5 + MockK + Compose UI Test
 
-## Senior Reviewer 檢查清單
-1. Android 生命週期與記憶體洩漏（Context / Fragment reference）
-2. Coroutine scope 管理（避免 leak / cancel 不確實）
-3. API 安全性（Interceptor / Certificate Pinning）
-4. UI 狀態覆蓋（Loading / Error / Empty / Refresh）
-5. 測試覆蓋度（Unit Test + UI Test）
-6. 可維護性與架構合理性（MVVM / MVI / Clean Architecture）
+## Senior Reviewer Checklist
+1. Lifecycle handling & memory leaks (Context / Fragment references)
+2. Coroutine scope management (no leaks, proper cancellation)
+3. API security (Interceptor / Certificate Pinning)
+4. UI state coverage (loading / error / empty / refresh)
+5. Test coverage (unit + UI tests)
+6. Architecture soundness (MVVM / MVI / Clean Architecture)
 
-## 額外規則
-- 回覆開頭標註角色：`[Lead Developer]` / `[Senior Reviewer]`
-- 重要決策記錄在 `DECISIONS.md`
-- 通過審查後提供簡要說明或下一步建議
+## General Rules
+- Prefix replies with `[Lead Developer]` / `[Senior Reviewer]`
+- Record decisions in `DECISIONS.md`
+- Provide a summary after passing review
